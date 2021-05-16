@@ -1,7 +1,13 @@
 package upce.nnpia.blog.service.impl;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import upce.nnpia.blog.dao.UserDao;
 import upce.nnpia.blog.dto.UserDto;
@@ -9,14 +15,18 @@ import upce.nnpia.blog.entity.User;
 import upce.nnpia.blog.service.UserService;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 @Service(value = "userService")
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Autowired
     private UserDao userDao;
+
+    @Autowired
+    private BCryptPasswordEncoder bcryptEncoder;
 
     @Override
     public void delete(long id) {
@@ -48,7 +58,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User save(UserDto user) {
-        return null;
+        User newUser = new ModelMapper().map(user, User.class);
+        newUser.setPassword(bcryptEncoder.encode(user.getPassword()));
+        return userDao.save(newUser);
     }
 
     @Override
@@ -58,4 +70,16 @@ public class UserServiceImpl implements UserService {
         return list;
     }
 
+    private List<SimpleGrantedAuthority> getAuthority() {
+        return Arrays.asList(new SimpleGrantedAuthority("ROLE_USER"));
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userDao.findByUsername(username);
+        if(user == null){
+            throw new UsernameNotFoundException("Invalid username or password.");
+        }
+        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), getAuthority());
+    }
 }
