@@ -10,7 +10,7 @@ import upce.nnpia.blog.dto.CommentDto;
 import upce.nnpia.blog.entity.Comment;
 import upce.nnpia.blog.service.CommentService;
 
-@Service
+@Service(value = "commentService")
 public class CommentServiceImpl implements CommentService {
 
     @Autowired

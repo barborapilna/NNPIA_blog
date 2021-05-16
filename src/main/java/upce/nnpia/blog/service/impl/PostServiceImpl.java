@@ -13,7 +13,7 @@ import upce.nnpia.blog.service.PostService;
 
 import java.util.Optional;
 
-@Service
+@Service(value = "postService")
 public class PostServiceImpl implements PostService {
 
     @Autowired
