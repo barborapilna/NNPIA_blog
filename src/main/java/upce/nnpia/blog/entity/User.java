@@ -1,5 +1,7 @@
 package upce.nnpia.blog.entity;
 
+import org.jetbrains.annotations.NotNull;
+
 import javax.persistence.*;
 
 @Entity
@@ -20,6 +22,15 @@ public class User {
 
     @Column(name = "password", columnDefinition = "TEXT", nullable = false)
     private String password;
+
+    @ManyToOne
+    @JoinColumn(name = "role_id", referencedColumnName = "role_id", nullable = false)
+    @NotNull
+    private Role role;
+
+    public Role getRole() { return role; }
+
+    public void setRole(Role role) { this.role = role; }
 
     public int getId() {
         return id;

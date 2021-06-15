@@ -3,6 +3,7 @@ package upce.nnpia.blog.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import upce.nnpia.blog.dto.PostDto;
 import upce.nnpia.blog.entity.Post;
@@ -18,17 +19,20 @@ public class PostController {
     private PostService postService;
 
     @PostMapping("/addPost")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public void addPost(@RequestBody PostDto post) {
         postService.save(post);
     }
 
     @GetMapping("/getAllPosts")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public Page<Post> getAllPosts(Pageable pageable) {
         return postService.findAll(pageable);
     }
 
     @Transactional
     @PostMapping("/removePost/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public void removePost(@RequestBody Post post) {
         postService.delete(post.getId());
     }

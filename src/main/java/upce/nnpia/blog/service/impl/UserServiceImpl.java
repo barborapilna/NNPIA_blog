@@ -7,7 +7,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import upce.nnpia.blog.dao.UserDao;
 import upce.nnpia.blog.dto.UserDto;
@@ -26,7 +26,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     private UserDao userDao;
 
     @Autowired
-    private BCryptPasswordEncoder bcryptEncoder;
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public void delete(long id) {
@@ -59,7 +59,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     @Override
     public User save(UserDto user) {
         User newUser = new ModelMapper().map(user, User.class);
-        newUser.setPassword(bcryptEncoder.encode(user.getPassword()));
+        newUser.setPassword(passwordEncoder.encode(user.getPassword()));
         return userDao.save(newUser);
     }
 

@@ -2,10 +2,11 @@ package upce.nnpia.blog.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import upce.nnpia.blog.dao.UserDao;
 import upce.nnpia.blog.dto.UserDto;
-import upce.nnpia.blog.entity.ApiResponse;
 import upce.nnpia.blog.entity.User;
 import upce.nnpia.blog.service.UserService;
 
@@ -26,43 +27,48 @@ public class UserController {
     private UserService userService;
 
     @PostMapping
-    public ApiResponse<User> saveUser(@RequestBody UserDto user) {
-        return new ApiResponse<>(HttpStatus.OK.value(), "User successfully saved.", userService.save(user));
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    public ResponseEntity<User> saveUser(@RequestBody UserDto user) {
+        return new ResponseEntity<>( userService.save(user), HttpStatus.OK);
     }
 
     @GetMapping
-    public ApiResponse<List<User>> listUser() {
-        return new ApiResponse<>(HttpStatus.OK.value(), "User successfully list fetched.", userService.findAll());
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    public ResponseEntity<List<User>> listUser() {
+        return new ResponseEntity<>(userService.findAll(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ApiResponse<User> getOne(@PathVariable int id) {
-        return new ApiResponse<>(HttpStatus.OK.value(), "User successfully fetched.", userService.findById(id));
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    public ResponseEntity<User> getOne(@PathVariable int id) {
+        return new ResponseEntity<>(userService.findById(id), HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    public ApiResponse<UserDto> update(@RequestBody UserDto userDto) {
-        return new ApiResponse<>(HttpStatus.OK.value(), "User successfully updated.", userService.update(userDto));
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    public ResponseEntity<UserDto> update(@RequestBody UserDto userDto) {
+        return new ResponseEntity<>(userService.update(userDto), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ApiResponse<Void> delete(@PathVariable int id) {
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    public ResponseEntity<Void> delete(@PathVariable int id) {
         userService.delete(id);
-        return new ApiResponse<>(HttpStatus.OK.value(), "User successfully deleted.", null);
+        return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
     @PostMapping("/registration")
-    public ApiResponse<Void> registrationUser(@RequestBody UserDto user) {
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    public ResponseEntity<String> registrationUser(@RequestBody UserDto user) {
 
         boolean existsByUsername = userDao.existsByUsername(user.getUsername());
         user.setPassword(user.getPassword());
 
         if (existsByUsername) {
-            System.out.println("User already exist!");
-            return new ApiResponse<>(HttpStatus.OK.value(), "This username is already used!", null);
+            return ResponseEntity.badRequest().body("User already exist!");
         } else { //zapise do DB
-            System.out.println("Registration: " + user.getFirstName());
-            return new ApiResponse<>(HttpStatus.OK.value(), "User successfully saved.", userService.save(user));
+            userService.save(user);
+            return ResponseEntity.ok().body("Registration: " + user.getFirstName());
         }
     }
 
