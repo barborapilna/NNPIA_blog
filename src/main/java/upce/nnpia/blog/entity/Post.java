@@ -10,21 +10,21 @@ import java.util.Set;
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "post_id")
+    @Column()
     private Long id;
 
-    @Column(name = "title", nullable = false)
+    @Column(nullable = false)
     private String title;
 
-    @Column(name = "body", columnDefinition = "TEXT")
+    @Column()
     private String body;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
     private Set<Comment> comments;
 
     @ManyToOne
-    @JsonManagedReference
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
+//    @JsonManagedReference
+//    @JoinColumn(nullable = false)
     @NotNull
     private User user;
 

@@ -7,10 +7,11 @@ public class Role {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "role_id")
+    @Column()
     private Long id;
 
-    @Column(name = "role_name", columnDefinition = "TEXT")
+    @Enumerated(EnumType.STRING)
+    @Column()
     private RoleType roleName;
 
     public Long getId() {

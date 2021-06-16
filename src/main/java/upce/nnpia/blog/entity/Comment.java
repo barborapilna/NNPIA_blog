@@ -8,19 +8,19 @@ import javax.persistence.*;
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "comment_id")
+    @Column()
     private Long id;
 
-    @Column(name = "body", columnDefinition = "TEXT")
+    @Column()
     private String body;
 
     @ManyToOne
-    @JoinColumn(name = "post_id", referencedColumnName = "post_id", nullable = false)
+//    @JoinColumn(nullable = false)
     @NotNull
     private Post post;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
+//    @JoinColumn(nullable = false)
     @NotNull
     private User user;
 
