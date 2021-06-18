@@ -2,15 +2,13 @@ package upce.nnpia.blog.service.impl;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import upce.nnpia.blog.dao.PostDao;
 import upce.nnpia.blog.dao.UserDao;
 import upce.nnpia.blog.dto.PostDto;
 import upce.nnpia.blog.entity.Post;
 import upce.nnpia.blog.service.PostService;
-
+import java.util.List;
 import java.util.Optional;
 
 @Service(value = "postService")
@@ -32,8 +30,8 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Page<Post> findAll(Pageable pageable) {
-        return postDao.findAll(pageable);
+    public List<Post> findAll() {
+        return postDao.findAll();
     }
 
     @Override

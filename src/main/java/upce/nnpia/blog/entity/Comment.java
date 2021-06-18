@@ -12,15 +12,14 @@ public class Comment {
     private Long id;
 
     @Column()
+    @NotNull
     private String body;
 
     @ManyToOne
-//    @JoinColumn(nullable = false)
     @NotNull
     private Post post;
 
     @ManyToOne
-//    @JoinColumn(nullable = false)
     @NotNull
     private User user;
 

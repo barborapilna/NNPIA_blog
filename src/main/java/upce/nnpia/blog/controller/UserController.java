@@ -18,39 +18,39 @@ import java.util.List;
 public class UserController {
 
     private final UserDao userDao;
-
-    public UserController(UserDao userDao) {
-        this.userDao = userDao;
-    }
+    private final UserService userService;
 
     @Autowired
-    private UserService userService;
+    public UserController(UserDao userDao, UserService userService) {
+        this.userDao = userDao;
+        this.userService = userService;
+    }
 
-    @PostMapping
+    @PostMapping("/user")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<User> saveUser(@RequestBody UserDto user) {
         return new ResponseEntity<>( userService.save(user), HttpStatus.OK);
     }
 
-    @GetMapping
-    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    @GetMapping("/user/getAll")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity<List<User>> listUser() {
         return new ResponseEntity<>(userService.findAll(), HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/user/{id}")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
-    public ResponseEntity<User> getOne(@PathVariable int id) {
+    public ResponseEntity<User> getUser(@PathVariable int id) {
         return new ResponseEntity<>(userService.findById(id), HttpStatus.OK);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/user/{id}")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<UserDto> update(@RequestBody UserDto userDto) {
         return new ResponseEntity<>(userService.update(userDto), HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/user/{id}")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable int id) {
         userService.delete(id);
@@ -58,7 +58,7 @@ public class UserController {
     }
 
     @PostMapping("/registration")
-    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+//    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<String> registrationUser(@RequestBody UserDto user) {
 
         boolean existsByUsername = userDao.existsByUsername(user.getUsername());

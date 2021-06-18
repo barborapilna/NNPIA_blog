@@ -15,6 +15,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
@@ -55,6 +57,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity.csrf().disable()
                 // dont authenticate this particular request
                 .authorizeRequests().antMatchers("/authenticate").permitAll()
+                .antMatchers("/post-list").permitAll()
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 // all other requests need to be authenticated
                 .anyRequest().authenticated().and().
@@ -66,5 +69,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         // Add a filter to validate the tokens with every request
         httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+    }
+
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**")
+                        .maxAge(3600)
+                        .allowedOrigins("*")
+                        .allowedMethods("GET", "PUT", "POST", "PATCH", "DELETE", "OPTIONS");
+            }
+        };
     }
 }

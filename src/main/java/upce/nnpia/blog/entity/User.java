@@ -27,7 +27,6 @@ public class User implements UserDetails {
     private String password;
 
     @ManyToOne
-//    @JoinColumn(nullable = false)
     @NotNull
     private Role role;
 

@@ -9,6 +9,7 @@ import upce.nnpia.blog.dao.UserDao;
 import upce.nnpia.blog.dto.CommentDto;
 import upce.nnpia.blog.entity.Comment;
 import upce.nnpia.blog.service.CommentService;
+import java.util.List;
 
 @Service(value = "commentService")
 public class CommentServiceImpl implements CommentService {
@@ -43,5 +44,10 @@ public class CommentServiceImpl implements CommentService {
         commentDao.findById(id).ifPresent(p -> {
             commentDao.delete(p);
         });
+    }
+
+    @Override
+    public List<Comment> findAll() {
+        return commentDao.findAll();
     }
 }

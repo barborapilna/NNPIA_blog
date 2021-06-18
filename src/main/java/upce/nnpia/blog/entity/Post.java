@@ -1,8 +1,6 @@
 package upce.nnpia.blog.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.jetbrains.annotations.NotNull;
-
 import javax.persistence.*;
 import java.util.Set;
 
@@ -16,15 +14,14 @@ public class Post {
     @Column(nullable = false)
     private String title;
 
-    @Column()
+    @Column(nullable = false)
+    @Lob
     private String body;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
     private Set<Comment> comments;
 
     @ManyToOne
-//    @JsonManagedReference
-//    @JoinColumn(nullable = false)
     @NotNull
     private User user;
 

@@ -1,5 +1,7 @@
 package upce.nnpia.blog.entity;
 
+import org.jetbrains.annotations.NotNull;
+
 import javax.persistence.*;
 
 @Entity
@@ -11,7 +13,7 @@ public class Role {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column()
+    @Column(nullable = false)
     private RoleType roleName;
 
     public Long getId() {
