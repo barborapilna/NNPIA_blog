@@ -55,19 +55,11 @@ public class Post {
         this.body = body;
     }
 
-    public Set<Comment> getComments() {
-        return comments;
-    }
+    public Set<Comment> getComments() { return comments; }
 
-    public void setComments(Set<Comment> comments) {
-        this.comments = comments;
-    }
+    public void setComments(Set<Comment> comments) { this.comments = comments; }
 
-    public User getUser() {
-        return user;
-    }
+    public User getUser() { return user; }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
+    public void setUser(User user) { this.user = user; }
 }
