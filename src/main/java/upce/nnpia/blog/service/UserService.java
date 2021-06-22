@@ -10,11 +10,11 @@ public interface UserService {
 
     List<User> findAll();
 
-    void delete(long id);
+    void delete(Long id);
 
     User findOne(String username);
 
-    User findById(long id);
+    User findById(Long id);
 
     UserDto update(UserDto userDto);
 }

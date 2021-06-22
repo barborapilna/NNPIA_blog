@@ -18,7 +18,7 @@ public class Post {
     @Lob
     private String body;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "id", cascade = CascadeType.REMOVE)
     private Set<Comment> comments;
 
     @ManyToOne

@@ -1,21 +1,24 @@
 package upce.nnpia.blog.service;
 
+import org.springframework.security.core.userdetails.UserDetails;
 import upce.nnpia.blog.dto.PostDto;
+import upce.nnpia.blog.dto.PostGetDto;
 import upce.nnpia.blog.entity.Post;
+import upce.nnpia.blog.security.UserDetail;
+
 import java.util.List;
-import java.util.Optional;
 
 public interface PostService {
 
-    void save(PostDto post);
+    void save(UserDetail user, PostDto post);
 
     List<Post> findAll();
 
     void delete(long id);
 
-    Post findOne(String title);
+    PostGetDto findOne(String title);
 
-    Optional<Post> findById(long id);
+    PostGetDto findById(long id);
 
     void update(PostDto postDto);
 }

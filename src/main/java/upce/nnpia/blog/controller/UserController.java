@@ -1,17 +1,12 @@
 package upce.nnpia.blog.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import upce.nnpia.blog.dao.UserDao;
 import upce.nnpia.blog.dto.UserDto;
-import upce.nnpia.blog.entity.User;
+import upce.nnpia.blog.service.Response;
 import upce.nnpia.blog.service.UserService;
-
-
-import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -20,55 +15,78 @@ public class UserController {
     private final UserDao userDao;
     private final UserService userService;
 
-    @Autowired
     public UserController(UserDao userDao, UserService userService) {
         this.userDao = userDao;
         this.userService = userService;
     }
 
     @PostMapping("/user")
-    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
-    public ResponseEntity<User> saveUser(@RequestBody UserDto user) {
-        return new ResponseEntity<>( userService.save(user), HttpStatus.OK);
+    public ResponseEntity<?> saveUser(@RequestBody UserDto user) {
+        try {
+            userService.save(user);
+            return new ResponseEntity<>(new Response("User was added."), HttpStatus.OK);
+        } catch (Exception ex) {
+            return new ResponseEntity<>(new Response("Add user failed."), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping("/user/getAll")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
-    public ResponseEntity<List<User>> listUser() {
-        return new ResponseEntity<>(userService.findAll(), HttpStatus.OK);
+    public ResponseEntity<?> listUser() {
+        try {
+            return new ResponseEntity<>(userService.findAll(), HttpStatus.OK);
+        } catch (Exception ex) {
+            return new ResponseEntity<>(new Response("Get users failed."), HttpStatus.BAD_REQUEST);
+        }
     }
 
-    @GetMapping("/user/{id}")
-    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
-    public ResponseEntity<User> getUser(@PathVariable int id) {
-        return new ResponseEntity<>(userService.findById(id), HttpStatus.OK);
+//    @GetMapping("/user/{id}")
+//    public ResponseEntity<?> getUser(@PathVariable int id) {
+//        try {
+//            return new ResponseEntity<>(userService.findById(id), HttpStatus.OK);
+//        } catch (Exception ex) {
+//            return new ResponseEntity<>(new Response("Get user failed."), HttpStatus.BAD_REQUEST);
+//        }
+//    }
+
+    @GetMapping("/user/{username}")
+    public ResponseEntity<?> getUser(@PathVariable String username) {
+        try {
+            return new ResponseEntity<>(userService.findOne(username), HttpStatus.OK);
+        } catch (Exception ex) {
+            return new ResponseEntity<>(new Response("Get user failed."), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PutMapping("/user/{id}")
-    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
-    public ResponseEntity<UserDto> update(@RequestBody UserDto userDto) {
-        return new ResponseEntity<>(userService.update(userDto), HttpStatus.OK);
+    public ResponseEntity<?> update(@RequestBody UserDto userDto) {
+        try {
+            userService.update(userDto);
+            return new ResponseEntity<>(new Response("User was edited."), HttpStatus.OK);
+        } catch (Exception ex) {
+            return new ResponseEntity<>(new Response("Edit user failed."), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @DeleteMapping("/user/{id}")
-    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
-    public ResponseEntity<Void> delete(@PathVariable int id) {
-        userService.delete(id);
-        return new ResponseEntity<>(null, HttpStatus.OK);
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+        try {
+            userService.delete(id);
+            return new ResponseEntity<>(new Response("User was deleted."), HttpStatus.OK);
+        } catch (Exception ex) {
+            return new ResponseEntity<>(new Response("Delete user failed."), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping("/registration")
-//    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
-    public ResponseEntity<String> registrationUser(@RequestBody UserDto user) {
-
+    public ResponseEntity<?> registrationUser(@RequestBody UserDto user) {
         boolean existsByUsername = userDao.existsByUsername(user.getUsername());
         user.setPassword(user.getPassword());
 
         if (existsByUsername) {
-            return ResponseEntity.badRequest().body("User already exist!");
+            return new ResponseEntity<>(new Response("User already exist!"), HttpStatus.BAD_REQUEST);
         } else { //zapise do DB
             userService.save(user);
-            return ResponseEntity.ok().body("Registration: " + user.getFirstName());
+            return new ResponseEntity<>(new Response("User " + user.getUsername() + " registered"), HttpStatus.OK);
         }
     }
 

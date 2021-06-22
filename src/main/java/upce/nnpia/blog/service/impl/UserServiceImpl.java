@@ -2,9 +2,8 @@ package upce.nnpia.blog.service.impl;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -12,23 +11,27 @@ import org.springframework.stereotype.Service;
 import upce.nnpia.blog.dao.UserDao;
 import upce.nnpia.blog.dto.UserDto;
 import upce.nnpia.blog.entity.User;
+import upce.nnpia.blog.security.UserDetail;
 import upce.nnpia.blog.service.UserService;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service(value = "userService")
 public class UserServiceImpl implements UserDetailsService, UserService {
 
-    @Autowired
     private UserDao userDao;
-
-    @Autowired
     private PasswordEncoder passwordEncoder;
 
+    public UserServiceImpl(UserDao userDao, PasswordEncoder passwordEncoder) {
+        this.userDao = userDao;
+        this.passwordEncoder = passwordEncoder;
+    }
+
     @Override
-    public void delete(long id) {
+    public void delete(Long id) {
         userDao.findById(id).ifPresent(p -> {
             userDao.delete(p);
         });
@@ -40,14 +43,14 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    public User findById(long id) {
+    public User findById(Long id) {
         Optional<User> optionalUser = userDao.findById(id);
         return optionalUser.orElse(null);
     }
 
     @Override
     public UserDto update(UserDto userDto) {
-        User user = findById(userDto.getId());
+        User user = userDao.findByUsername(userDto.getUsername());
         if(user != null) {
             BeanUtils.copyProperties(userDto, user, "password", "username");
             userDao.save(user);
@@ -74,11 +77,14 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetail loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userDao.findByUsername(username);
         if(user == null){
             throw new UsernameNotFoundException("Invalid username or password.");
         }
-        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), getAuthority());
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority(user.getRole().getRoleName().name()));
+
+        return new UserDetail(user.getUsername(), user.getPassword(), authorities);
     }
 }
