@@ -13,11 +13,11 @@ public interface CommentService {
 
     void update(CommentDto comment);
 
-    void delete(long id);
+    void delete(Long id);
 
     List<Comment> findAll();
 
-    CommentGetDto findById(long id);
+    CommentGetDto findById(Long id);
 
-    List<CommentGetDto> getPostComments(long postId);
+    List<CommentGetDto> getPostComments(Long postId);
 }

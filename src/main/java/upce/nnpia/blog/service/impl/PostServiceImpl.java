@@ -4,12 +4,16 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import upce.nnpia.blog.dao.PostDao;
 import upce.nnpia.blog.dao.UserDao;
+import upce.nnpia.blog.dto.CommentGetDto;
 import upce.nnpia.blog.dto.PostDto;
 import upce.nnpia.blog.dto.PostGetDto;
 import upce.nnpia.blog.entity.Post;
 import upce.nnpia.blog.security.UserDetail;
 import upce.nnpia.blog.service.PostService;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service(value = "postService")
 public class PostServiceImpl implements PostService {
@@ -32,21 +36,26 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<Post> findAll() {
-        return postDao.findAll();
+    public List<PostGetDto> findAll() {
+        List<PostGetDto> postsGetDto = new ArrayList<>();
+        List<Post> posts = postDao.findAll();
+
+        for (var post : posts) {
+            postsGetDto.add(new PostGetDto(post.getId(), post.getTitle(), post.getBody(), post.getUser().getUsername()));
+        }
+
+        return postsGetDto;
     }
 
     @Override
-    public void delete(long id) {
-        postDao.findById(id).ifPresent(p -> {
-            postDao.delete(p);
-        });
+    public void delete(Long id) {
+        postDao.deleteById(id);
     }
 
     @Override
     public PostGetDto findOne(String title) {
-        var postGetDto = new PostGetDto();
-        var post = postDao.findByTitle(title);
+        PostGetDto postGetDto = new PostGetDto();
+        Post post = postDao.findByTitle(title);
 
         postGetDto.setId(post.getId());
         postGetDto.setBody(post.getBody());
@@ -57,11 +66,11 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostGetDto findById(long id) {
-        var postGetDto = new PostGetDto();
-        var post = postDao.findById(id);
+    public PostGetDto findById(Long id) {
+        PostGetDto postGetDto = new PostGetDto();
+        Optional<Post> post = postDao.findById(id);
 
-        postGetDto.setId(post.get().getId());
+        postGetDto.setId(post.orElseThrow().getId());
         postGetDto.setBody(post.get().getBody());
         postGetDto.setTitle(post.get().getTitle());
         postGetDto.setUserName(post.get().getUser().getUsername());
@@ -71,7 +80,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void update(PostDto post) {
-        Post newPost = postDao.findById(post.getId()).get();
+        Post newPost = postDao.findById(post.getId()).orElseThrow();
         BeanUtils.copyProperties(post, newPost);
         postDao.save(newPost);
     }

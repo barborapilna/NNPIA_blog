@@ -30,7 +30,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public void save(UserDetail user, CommentDto comment) {
         Comment newComment = new Comment();
-        newComment.setPost(postDao.findById(comment.getPostId()).get());
+        newComment.setPost(postDao.findById(comment.getPostId()).orElseThrow());
         newComment.setBody(comment.getBody());
         newComment.setUser(userDao.findByUsername(user.getUsername()));
         commentDao.saveAndFlush(newComment);
@@ -38,24 +38,24 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public void update(CommentDto comment) {
-        Comment newComment = commentDao.findById(comment.getId()).get();
+        Comment newComment = commentDao.findById(comment.getId()).orElseThrow();
         BeanUtils.copyProperties(comment, newComment, "post_id");
         commentDao.save(newComment);
     }
 
     @Override
-    public void delete(long id) {
+    public void delete(Long id) {
         commentDao.findById(id).ifPresent(p -> {
             commentDao.delete(p);
         });
     }
 
     @Override
-    public CommentGetDto findById(long id) {
+    public CommentGetDto findById(Long id) {
         var commentGetDto = new CommentGetDto();
         var comment = commentDao.findById(id);
 
-        commentGetDto.setId(comment.get().getId());
+        commentGetDto.setId(comment.orElseThrow().getId());
         commentGetDto.setBody(comment.get().getBody());
         commentGetDto.setUserName(comment.get().getUser().getUsername());
 
@@ -68,7 +68,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public List<CommentGetDto> getPostComments(long postId) {
+    public List<CommentGetDto> getPostComments(Long postId) {
         var commentsGetDto = new ArrayList<CommentGetDto>();
         var comments = commentDao.findByPostId(postId);
 

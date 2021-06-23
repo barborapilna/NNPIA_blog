@@ -12,13 +12,13 @@ public interface PostService {
 
     void save(UserDetail user, PostDto post);
 
-    List<Post> findAll();
+    List<PostGetDto> findAll();
 
-    void delete(long id);
+    void delete(Long id);
 
     PostGetDto findOne(String title);
 
-    PostGetDto findById(long id);
+    PostGetDto findById(Long id);
 
     void update(PostDto postDto);
 }

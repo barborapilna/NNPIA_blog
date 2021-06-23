@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import upce.nnpia.blog.dto.PostDto;
+import upce.nnpia.blog.dto.PostGetDto;
 import upce.nnpia.blog.entity.Post;
 import upce.nnpia.blog.security.CurrentUser;
 import upce.nnpia.blog.security.UserDetail;
@@ -34,12 +35,12 @@ public class PostController {
     }
 
     @GetMapping("/post/getAll")
-    public List<Post> getAllPosts() {
+    public List<PostGetDto> getAllPosts() {
         return postService.findAll();
     }
 
     @GetMapping("/post/{id}")
-    public ResponseEntity<?> getPost(@PathVariable int id) {
+    public ResponseEntity<?> getPost(@PathVariable Long id) {
         try {
             return new ResponseEntity<>(postService.findById(id), HttpStatus.OK);
         } catch (Exception ex) {

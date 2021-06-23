@@ -13,11 +13,11 @@ import upce.nnpia.blog.dto.UserDto;
 import upce.nnpia.blog.entity.User;
 import upce.nnpia.blog.security.UserDetail;
 import upce.nnpia.blog.service.UserService;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service(value = "userService")
 public class UserServiceImpl implements UserDetailsService, UserService {
@@ -32,9 +32,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Override
     public void delete(Long id) {
-        userDao.findById(id).ifPresent(p -> {
-            userDao.delete(p);
-        });
+        userDao.deleteById(id);
     }
 
     @Override
@@ -51,7 +49,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     @Override
     public UserDto update(UserDto userDto) {
         User user = userDao.findByUsername(userDto.getUsername());
-        if(user != null) {
+        if (user != null) {
             BeanUtils.copyProperties(userDto, user, "password", "username");
             userDao.save(user);
         }
@@ -59,10 +57,15 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    public User save(UserDto user) {
-        User newUser = new ModelMapper().map(user, User.class);
-        newUser.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userDao.save(newUser);
+    public void save(UserDto user) {
+        boolean existsByUsername = userDao.existsByUsername(user.getUsername());
+        if (!existsByUsername) {
+            User newUser = new ModelMapper().map(user, User.class);
+            newUser.setPassword(passwordEncoder.encode(user.getPassword()));
+            userDao.save(newUser);
+        } else {
+            throw new UsernameNotFoundException("This username already exist.");
+        }
     }
 
     @Override
@@ -79,7 +82,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     @Override
     public UserDetail loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userDao.findByUsername(username);
-        if(user == null){
+        if (user == null) {
             throw new UsernameNotFoundException("Invalid username or password.");
         }
         List<GrantedAuthority> authorities = new ArrayList<>();

@@ -79,14 +79,11 @@ public class UserController {
 
     @PostMapping("/registration")
     public ResponseEntity<?> registrationUser(@RequestBody UserDto user) {
-        boolean existsByUsername = userDao.existsByUsername(user.getUsername());
-        user.setPassword(user.getPassword());
-
-        if (existsByUsername) {
-            return new ResponseEntity<>(new Response("User already exist!"), HttpStatus.BAD_REQUEST);
-        } else { //zapise do DB
+        try {
             userService.save(user);
-            return new ResponseEntity<>(new Response("User " + user.getUsername() + " registered"), HttpStatus.OK);
+            return new ResponseEntity<>(new Response("User was added."), HttpStatus.OK);
+        } catch (Exception ex) {
+            return new ResponseEntity<>(new Response("Add user failed."), HttpStatus.BAD_REQUEST);
         }
     }
 

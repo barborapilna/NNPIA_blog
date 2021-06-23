@@ -1,5 +1,6 @@
 package upce.nnpia.blog.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.jetbrains.annotations.NotNull;
 import javax.persistence.*;
 import java.util.Set;
@@ -18,7 +19,8 @@ public class Post {
     @Lob
     private String body;
 
-    @OneToMany(mappedBy = "id", cascade = CascadeType.REMOVE)
+//    @JsonIgnore
+    @OneToMany(mappedBy = "id", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private Set<Comment> comments;
 
     @ManyToOne
