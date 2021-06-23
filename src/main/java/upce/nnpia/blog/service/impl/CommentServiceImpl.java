@@ -28,12 +28,20 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public void save(UserDetail user, CommentDto comment) {
+    public CommentGetDto save(UserDetail user, CommentDto comment) {
         Comment newComment = new Comment();
         newComment.setPost(postDao.findById(comment.getPostId()).orElseThrow());
         newComment.setBody(comment.getBody());
         newComment.setUser(userDao.findByUsername(user.getUsername()));
         commentDao.saveAndFlush(newComment);
+
+        var commentGetDto = new CommentGetDto();
+
+        commentGetDto.setId(newComment.getId());
+        commentGetDto.setBody(newComment.getBody());
+        commentGetDto.setUserName(newComment.getUser().getUsername());
+
+        return commentGetDto;
     }
 
     @Override

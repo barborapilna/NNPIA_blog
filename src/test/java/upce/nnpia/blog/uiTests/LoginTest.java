@@ -98,6 +98,9 @@ class LoginTest {
         if (driver != null) {
             driver.quit();
         }
+
+        userDao.deleteAll();
+        roleDao.deleteAll();
     }
 
     @Test
@@ -106,8 +109,8 @@ class LoginTest {
         driver.findElement(By.name("username")).sendKeys("username");
         driver.findElement(By.name("password")).sendKeys("testRootPassword");
         driver.findElement(By.xpath("//button[text()='Login']")).click();
-        WebDriverWait wt = new WebDriverWait(driver, 7);
-        wt.until(ExpectedConditions.urlContains("/home"));
+        WebDriverWait wt = new WebDriverWait(driver, 1000);
+        wt.until(ExpectedConditions.urlContains("home"));
         Assertions.assertNotNull(localStorage.getItem("tokens"));
     }
 

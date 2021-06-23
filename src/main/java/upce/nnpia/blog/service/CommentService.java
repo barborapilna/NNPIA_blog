@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface CommentService {
 
-    void save(UserDetail user, CommentDto comment);
+    CommentGetDto save(UserDetail user, CommentDto comment);
 
     void update(CommentDto comment);
 

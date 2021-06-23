@@ -1,6 +1,9 @@
 package upce.nnpia.blog.service.impl;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import upce.nnpia.blog.dao.PostDao;
 import upce.nnpia.blog.dao.UserDao;
@@ -37,32 +40,21 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public List<PostGetDto> findAll() {
+//    public Page<PostGetDto> findAll(Pageable pageable) {
         List<PostGetDto> postsGetDto = new ArrayList<>();
         List<Post> posts = postDao.findAll();
+//        Page<Post> posts = postDao.findAll(pageable);
 
         for (var post : posts) {
             postsGetDto.add(new PostGetDto(post.getId(), post.getTitle(), post.getBody(), post.getUser().getUsername()));
         }
-
         return postsGetDto;
+//        return new PageImpl<>(postsGetDto);
     }
 
     @Override
     public void delete(Long id) {
         postDao.deleteById(id);
-    }
-
-    @Override
-    public PostGetDto findOne(String title) {
-        PostGetDto postGetDto = new PostGetDto();
-        Post post = postDao.findByTitle(title);
-
-        postGetDto.setId(post.getId());
-        postGetDto.setBody(post.getBody());
-        postGetDto.setTitle(post.getTitle());
-        postGetDto.setUserName(post.getUser().getUsername());
-
-        return postGetDto;
     }
 
     @Override

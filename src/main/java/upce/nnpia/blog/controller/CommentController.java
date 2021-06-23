@@ -25,8 +25,7 @@ public class CommentController {
     @PostMapping("/comment")
     public ResponseEntity<?> addComment(@CurrentUser UserDetail user, @RequestBody CommentDto comment) {
         try {
-            commentService.save(user, comment);
-            return new ResponseEntity<>(new Response("Your comment was added."), HttpStatus.OK);
+            return new ResponseEntity<>(commentService.save(user, comment), HttpStatus.OK);
         } catch (Exception ex) {
             return new ResponseEntity<>(new Response("Add comment failed."), HttpStatus.BAD_REQUEST);
         }

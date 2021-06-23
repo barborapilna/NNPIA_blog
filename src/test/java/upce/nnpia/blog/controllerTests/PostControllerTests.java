@@ -1,9 +1,11 @@
 package upce.nnpia.blog.controllerTests;
 
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -11,19 +13,25 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import upce.nnpia.blog.BlogApplication;
 import upce.nnpia.blog.dao.PostDao;
+import upce.nnpia.blog.dao.RoleDao;
+import upce.nnpia.blog.dao.UserDao;
 import upce.nnpia.blog.entity.Post;
+import upce.nnpia.blog.entity.Role;
+import upce.nnpia.blog.entity.RoleType;
+import upce.nnpia.blog.entity.User;
 
-import java.util.Collections;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @SpringBootTest(classes = BlogApplication.class)
 @AutoConfigureMockMvc
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class PostControllerTests {
     @Autowired
     private MockMvc mockMvc;
@@ -31,9 +39,40 @@ public class PostControllerTests {
     @MockBean
     private PostDao postDao;
 
+    @Autowired
+    private UserDao userDao;
+
+    @Autowired
+    private RoleDao roleDao;
+
     @BeforeEach
     public void shouldCreateMockMvc() {
         assertNotNull(mockMvc);
+
+        Role role = new Role();
+        role.setRoleName(RoleType.ROLE_USER);
+        roleDao.saveAndFlush(role);
+
+        User user = new User();
+        user.setRole(role);
+        user.setUsername("test");
+        user.setLastName("lastname");
+        user.setFirstName("firstname");
+        user.setPassword("test");
+
+        userDao.saveAndFlush(user);
+    }
+
+    @Test
+    public void login() throws Exception {
+
+        String response = mockMvc.perform(post("/authenticate")
+                .contentType(MediaType.APPLICATION_JSON).content(
+                        "{ \"username\":\"test\", \"password\":\"test\" }"
+                ).accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+
+        Assertions.assertTrue(response.contains("tokens"));
     }
 
     @Test

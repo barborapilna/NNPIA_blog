@@ -1,5 +1,7 @@
 package upce.nnpia.blog.controller;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,6 +36,10 @@ public class PostController {
         }
     }
 
+//    @GetMapping(value = "/post/getAll")
+//    public Page<PostGetDto> getAllPosts(@RequestParam(value = "page",required = false, defaultValue = "0") Long page,
+//                                        @RequestParam(value = "size",required = false, defaultValue = "5") Long size) {
+//        return postService.findAll(PageRequest.of(page.intValue(), size.intValue()));
     @GetMapping("/post/getAll")
     public List<PostGetDto> getAllPosts() {
         return postService.findAll();
