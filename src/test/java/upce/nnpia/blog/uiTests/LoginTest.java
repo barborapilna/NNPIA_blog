@@ -1,6 +1,7 @@
 package upce.nnpia.blog.uiTests;
 
 import org.junit.jupiter.api.*;
+import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -11,6 +12,7 @@ import org.openqa.selenium.remote.Augmenter;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.junit4.SpringRunner;
 import upce.nnpia.blog.BlogApplication;
 import upce.nnpia.blog.dao.RoleDao;
 import upce.nnpia.blog.dao.UserDao;
@@ -26,6 +28,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
 
+
 @SpringBootTest(classes = BlogApplication.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @Import(Creator.class)
 class LoginTest {
@@ -34,16 +37,16 @@ class LoginTest {
     private LocalStorage localStorage;
 
     @Autowired
-    UserDao userDao;
+    private UserDao userDao;
 
     @Autowired
-    RoleDao roleDao;
+    private RoleDao roleDao;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    Creator creator;
+    private Creator creator;
 
     @BeforeAll
     public static void setupWebdriverChromeDriver() {

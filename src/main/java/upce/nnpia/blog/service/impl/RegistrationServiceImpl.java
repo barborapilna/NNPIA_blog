@@ -24,12 +24,12 @@ public class RegistrationServiceImpl implements RegistrationService {
 
     @Override
     public void registration(UserDto user) {
-        User temp = new User();
-        temp.setFirstName(user.getFirstName());
-        temp.setLastName(user.getLastName());
-        temp.setUsername(user.getUsername());
-        temp.setPassword(passwordEncoder.encode(user.getPassword()));
-        temp.setRole(roleService.findByRoleName(RoleType.ROLE_USER));
-        userService.save(temp);
+        User newUser = new User();
+        newUser.setFirstName(user.getFirstName());
+        newUser.setLastName(user.getLastName());
+        newUser.setUsername(user.getUsername());
+        newUser.setPassword(passwordEncoder.encode(user.getPassword()));
+        newUser.setRole(roleService.findByRoleName(RoleType.ROLE_USER));
+        userService.save(newUser);
     }
 }

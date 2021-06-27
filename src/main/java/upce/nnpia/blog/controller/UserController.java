@@ -13,12 +13,10 @@ import upce.nnpia.blog.service.UserService;
 @CrossOrigin(origins = "*", maxAge = 3600)
 public class UserController {
 
-    private final UserDao userDao;
     private final UserService userService;
     private final RegistrationService registrationService;
 
-    public UserController(UserDao userDao, UserService userService, RegistrationService registrationService) {
-        this.userDao = userDao;
+    public UserController( UserService userService, RegistrationService registrationService) {
         this.userService = userService;
         this.registrationService = registrationService;
     }
