@@ -40,7 +40,7 @@ java.sourceCompatibility = JavaVersion.VERSION_11
 
 tasks.register<com.github.gradle.node.npm.task.NpmTask>("appNpmInstall") {
     description = "Installs all dependencies from package.json"
-    workingDir.set(file("${project.projectDir}/client-react"))
+    workingDir.set(file("${project.projectDir}/../blog-fe"))
     args.set(listOf("install"))
 }
 
@@ -69,7 +69,6 @@ node {
 tasks.withType<JavaCompile> {
     dependsOn("copyWebApp")
 }
-
 
 tasks.withType<Test> {
     useJUnitPlatform()
