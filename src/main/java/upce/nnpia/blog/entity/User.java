@@ -1,8 +1,9 @@
 package upce.nnpia.blog.entity;
 
-import org.jetbrains.annotations.NotNull;
+import com.sun.istack.NotNull;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -22,6 +23,9 @@ public class User {
 
     @Column(nullable = false)
     private String password;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private Set<Post> events;
 
     public User() {
     }
@@ -84,5 +88,13 @@ public class User {
 
     public String getPassword() {
         return password;
+    }
+
+    public Set<Post> getEvents() {
+        return events;
+    }
+
+    public void setEvents(Set<Post> events) {
+        this.events = events;
     }
 }
