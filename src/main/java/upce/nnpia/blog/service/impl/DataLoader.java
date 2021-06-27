@@ -29,8 +29,8 @@ public class DataLoader implements ApplicationRunner {
         if (roleDao.findByRoleName(RoleType.ROLE_ADMIN) == null)
             roleDao.saveAndFlush(new Role(RoleType.ROLE_ADMIN));
 
-        User user = new User("Pepa", "Novák", "pepanovak", passwordEncoder.encode("password"), roleDao.findByRoleName(RoleType.ROLE_USER));
-        User admin = new User("Tomáš", "Steklý", "tomasstekly", passwordEncoder.encode("password"), roleDao.findByRoleName(RoleType.ROLE_ADMIN));
+        User user = new User("Tomáš", "Vomáčka", "vomtom", passwordEncoder.encode("password"), roleDao.findByRoleName(RoleType.ROLE_USER));
+        User admin = new User("Klára", "Novotná", "novkla", passwordEncoder.encode("password"), roleDao.findByRoleName(RoleType.ROLE_ADMIN));
 
         if (!userDao.existsByUsername(user.getUsername()))
             userDao.saveAndFlush(user);

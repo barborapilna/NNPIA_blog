@@ -45,9 +45,6 @@ class LoginTest {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private Creator creator;
-
     @BeforeAll
     public static void setupWebdriverChromeDriver() {
         URL url = LoginTest.class.getResource("/chromedriver.exe");
@@ -102,7 +99,7 @@ class LoginTest {
         driver.findElement(By.name("username")).sendKeys("username");
         driver.findElement(By.name("password")).sendKeys("testRootPassword");
         driver.findElement(By.xpath("//button[text()='Login']")).click();
-        WebDriverWait wt = new WebDriverWait(driver, 1000);
+        WebDriverWait wt = new WebDriverWait(driver, 10);
         wt.until(ExpectedConditions.urlContains("/#/about"));
         Assertions.assertNotNull(localStorage.getItem("tokens"));
     }
