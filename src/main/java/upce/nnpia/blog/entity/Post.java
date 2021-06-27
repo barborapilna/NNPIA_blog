@@ -1,6 +1,6 @@
 package upce.nnpia.blog.entity;
 
-import org.jetbrains.annotations.NotNull;
+import com.sun.istack.NotNull;
 import javax.persistence.*;
 import java.util.Set;
 
@@ -17,7 +17,7 @@ public class Post {
     @Column(nullable = false)
     private String body;
 
-    @OneToMany(mappedBy = "id", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private Set<Comment> comments;
 
     @ManyToOne
@@ -54,11 +54,11 @@ public class Post {
         this.body = body;
     }
 
-    public Set<Comment> getComments() { return comments; }
-
-    public void setComments(Set<Comment> comments) { this.comments = comments; }
-
     public User getUser() { return user; }
 
     public void setUser(User user) { this.user = user; }
+
+    public Set<Comment> getComments() { return comments; }
+
+    public void setComments(Set<Comment> comments) { this.comments = comments; }
 }

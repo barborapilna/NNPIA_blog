@@ -1,6 +1,6 @@
 package upce.nnpia.blog.entity;
 
-import org.jetbrains.annotations.NotNull;
+import com.sun.istack.NotNull;
 
 import javax.persistence.*;
 
