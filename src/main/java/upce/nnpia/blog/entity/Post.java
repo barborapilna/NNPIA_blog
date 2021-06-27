@@ -1,25 +1,22 @@
 package upce.nnpia.blog.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.jetbrains.annotations.NotNull;
 import javax.persistence.*;
 import java.util.Set;
 
 @Entity
 public class Post {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column()
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Column(nullable = false)
     private String title;
 
     @Column(nullable = false)
-    @Lob
     private String body;
 
-//    @JsonIgnore
     @OneToMany(mappedBy = "id", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private Set<Comment> comments;
 

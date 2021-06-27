@@ -17,9 +17,9 @@ import java.util.List;
 @Service(value = "commentService")
 public class CommentServiceImpl implements CommentService {
 
-    private CommentDao commentDao;
-    private PostDao postDao;
-    private UserDao userDao;
+    private final CommentDao commentDao;
+    private final PostDao postDao;
+    private final UserDao userDao;
 
     public CommentServiceImpl(CommentDao commentDao, PostDao postDao, UserDao userDao) {
         this.commentDao = commentDao;

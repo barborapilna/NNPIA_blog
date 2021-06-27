@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Component;
+import upce.nnpia.blog.entity.Role;
+import upce.nnpia.blog.entity.RoleType;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.Entity;
@@ -61,7 +63,6 @@ public class Creator {
                     field.setAccessible(true);
                     Object propValue = FieldUtils.readField(field, entity);
                     boolean id = fieldHasAnnotation(field, Id.class);
-                    ;
                     if (propValue == null && !id) {
                         Class<?> fieldClass = field.getType();
                         if (fieldClass.isAssignableFrom(String.class)) {
@@ -69,18 +70,17 @@ public class Creator {
                         } else {
                             if (Date.class.equals(fieldClass)) {
                                 propValue = new Date(System.currentTimeMillis());
-                            } else if (Long.class.equals(fieldClass)){
+                            } else if (Long.class.equals(fieldClass)) {
                                 propValue = 1L;
-                            }else if (Set.class.equals(fieldClass)){
+                            } else if (Set.class.equals(fieldClass)) {
                                 propValue = new HashSet<>();
-                            }else if (Boolean.class.equals(fieldClass)){
-                                propValue=true;
-                            }else if (Integer.class.equals(fieldClass)){
-                                propValue=1 + (int)(Math.random() * 50000);
-                            }else if (Double.class.equals(fieldClass)){
-                                propValue=Math.random();
-                            }
-                            else {
+                            } else if (Boolean.class.equals(fieldClass)) {
+                                propValue = true;
+                            } else if (Integer.class.equals(fieldClass)) {
+                                propValue = 1 + (int) (Math.random() * 50000);
+                            } else if (Double.class.equals(fieldClass)) {
+                                propValue = Math.random();
+                            } else {
                                 propValue = fieldClass.newInstance();
                             }
                         }

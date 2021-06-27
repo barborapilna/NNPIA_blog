@@ -28,21 +28,17 @@ class PostTests {
 
     @Test
     void saveOnePost() {
-        List<Post> forRes = postDao.findAll();
-        int size = forRes.size()+1;
         postTestDataFactory.saveNewPost1();
         List<Post> all = postDao.findAll();
-        Assertions.assertEquals(all.size(), size);
+        Assertions.assertEquals(all.size(), 1);
     }
 
     @Test
     void savePosts() {
-        List<Post> forRes = postDao.findAll();
-        int size = forRes.size()+2;
         postTestDataFactory.saveNewPost1();
         postTestDataFactory.saveNewPost2();
         List<Post> all = postDao.findAll();
-        Assertions.assertEquals(all.size(), size);
+        Assertions.assertEquals(all.size(), 2);
     }
 
     @Test

@@ -1,20 +1,24 @@
 package upce.nnpia.blog.entity;
 
-import org.jetbrains.annotations.NotNull;
-
 import javax.persistence.*;
 
 @Entity
 public class Role {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column()
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private RoleType roleName;
+
+    public Role() {
+    }
+
+    public Role(RoleType roleName) {
+        this.roleName = roleName;
+    }
 
     public Long getId() {
         return id;

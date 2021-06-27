@@ -7,11 +7,9 @@ import javax.persistence.*;
 @Entity
 public class Comment {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column()
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column()
     @NotNull
     private String body;
 

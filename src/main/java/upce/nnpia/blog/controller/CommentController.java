@@ -42,7 +42,7 @@ public class CommentController {
     }
 
     @GetMapping("/comment/{id}")
-    public ResponseEntity<?> getComment(@PathVariable long id) {
+    public ResponseEntity<?> getComment(@PathVariable Long id) {
         try {
             return new ResponseEntity<>(commentService.findById(id), HttpStatus.OK);
         } catch (Exception ex) {
@@ -51,7 +51,7 @@ public class CommentController {
     }
 
     @GetMapping("/comments/{postId}")
-    public ResponseEntity<?> getPostComments(@PathVariable long postId) {
+    public ResponseEntity<?> getPostComments(@PathVariable Long postId) {
         try {
             return new ResponseEntity<>(commentService.getPostComments(postId), HttpStatus.OK);
         } catch (Exception ex) {

@@ -1,6 +1,5 @@
 package upce.nnpia.blog.service.impl;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -22,8 +21,8 @@ import java.util.Optional;
 @Service(value = "userService")
 public class UserServiceImpl implements UserDetailsService, UserService {
 
-    private UserDao userDao;
-    private PasswordEncoder passwordEncoder;
+    private final UserDao userDao;
+    private final PasswordEncoder passwordEncoder;
 
     public UserServiceImpl(UserDao userDao, PasswordEncoder passwordEncoder) {
         this.userDao = userDao;
@@ -57,12 +56,10 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    public void save(UserDto user) {
+    public void save(User user) {
         boolean existsByUsername = userDao.existsByUsername(user.getUsername());
         if (!existsByUsername) {
-            User newUser = new ModelMapper().map(user, User.class);
-            newUser.setPassword(passwordEncoder.encode(user.getPassword()));
-            userDao.save(newUser);
+            userDao.save(user);
         } else {
             throw new UsernameNotFoundException("This username already exist.");
         }

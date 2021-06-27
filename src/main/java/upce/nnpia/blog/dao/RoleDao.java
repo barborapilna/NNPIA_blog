@@ -10,5 +10,6 @@ public interface RoleDao extends JpaRepository<Role, Long> {
     Role findByRoleName(RoleType roleName);
     List<Role> findAll();
     void delete(Role post);
+    boolean existsByRoleName(RoleType roleType);
 }
 

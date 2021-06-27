@@ -1,6 +1,6 @@
 package upce.nnpia.blog.controllerTests;
 
-
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,36 +8,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
-import upce.nnpia.blog.BlogApplication;
 import upce.nnpia.blog.dao.PostDao;
 import upce.nnpia.blog.dao.RoleDao;
 import upce.nnpia.blog.dao.UserDao;
-import upce.nnpia.blog.entity.Post;
 import upce.nnpia.blog.entity.Role;
 import upce.nnpia.blog.entity.RoleType;
 import upce.nnpia.blog.entity.User;
 
-import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
-@SpringBootTest(classes = BlogApplication.class)
+@SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class PostControllerTests {
+
     @Autowired
     private MockMvc mockMvc;
-
-    @MockBean
-    private PostDao postDao;
 
     @Autowired
     private UserDao userDao;
@@ -45,80 +36,45 @@ public class PostControllerTests {
     @Autowired
     private RoleDao roleDao;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @BeforeEach
     public void shouldCreateMockMvc() {
         assertNotNull(mockMvc);
 
-        Role role = new Role();
-        role.setRoleName(RoleType.ROLE_USER);
-        roleDao.saveAndFlush(role);
-
         User user = new User();
-        user.setRole(role);
+        user.setRole(roleDao.findByRoleName(RoleType.ROLE_USER));
         user.setUsername("test");
         user.setLastName("lastname");
         user.setFirstName("firstname");
-        user.setPassword("test");
+        user.setPassword(passwordEncoder.encode("test"));
 
         userDao.saveAndFlush(user);
     }
 
+    @AfterEach
+    public void teardown() {
+        userDao.deleteAll();
+    }
+
     @Test
     public void login() throws Exception {
-
-        String response = mockMvc.perform(post("/authenticate")
-                .contentType(MediaType.APPLICATION_JSON).content(
-                        "{ \"username\":\"test\", \"password\":\"test\" }"
-                ).accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
-
-        Assertions.assertTrue(response.contains("tokens"));
+        String content = mockMvc.perform(post("/authenticate").contentType(MediaType.APPLICATION_JSON)
+                .content(String.format("{ \"username\":\"%s\", \"password\":\"%s\" }", "test", "test"))
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()).andReturn()
+                .getResponse().getContentAsString();
+        Assertions.assertTrue(content.contains("token"));
     }
 
     @Test
-    public void getPostByID() throws Exception {
-        Post post = new Post();
-        post.setId(1L);
-        post.setTitle("Post title");
-        post.setBody("This is a post body. This is a post body. This is a post body.");
-
-        postDao.save(post);
-        Optional<Post> optionalPost = Optional.of(post);
-
-        when(postDao.findById(1L)).thenReturn(optionalPost);
-
-        mockMvc.perform(get("/post/1")
+    public void registration() throws Exception {
+        String response = mockMvc.perform(post("/registration").contentType(MediaType.APPLICATION_JSON)
+                .content(String.format("{ \"firstName\":\"%s\", \"lastName\":\"%s\", \"username\":\"%s\", \"password\":\"%s\" }", "testFirstname", "testLastname", "testUsername", "testPassword"))
                 .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.title").value("Post title"));
+                .andExpect(status().isOk()).andReturn()
+                .getResponse().getContentAsString();
+        Assertions.assertTrue(response.contains("User was added."));
     }
-
-    @Test
-    public void getProducts() throws Exception {
-        Post post1 = new Post();
-        post1.setId(1L);
-        post1.setTitle("Post title 1");
-        post1.setBody("This is a post body. This is a post body. This is a post body.");
-
-        Post post2 = new Post();
-        post2.setId(1L);
-        post2.setTitle("Post title 2");
-        post2.setBody("This is a post body. This is a post body. This is a post body.");
-
-        postDao.save(post1);
-        postDao.save(post2);
-
-//        when(postDao.findAll()).thenReturn(Collections.singletonList(post1));
-//        when(postDao.findAll()).thenReturn(Collections.list(post1, post2));
-
-        mockMvc.perform(get("/post/getAll")
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$[0].title").value("Post title 1"))
-                .andExpect(jsonPath("$[1].title").value("Post title 2"));
-    }
-
 }

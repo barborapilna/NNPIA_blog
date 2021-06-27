@@ -10,13 +10,11 @@ import org.openqa.selenium.html5.WebStorage;
 import org.openqa.selenium.remote.Augmenter;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import upce.nnpia.blog.BlogApplication;
 import upce.nnpia.blog.dao.RoleDao;
 import upce.nnpia.blog.dao.UserDao;
 import upce.nnpia.blog.dataFactory.Creator;
-import upce.nnpia.blog.entity.Role;
 import upce.nnpia.blog.entity.RoleType;
 import upce.nnpia.blog.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +25,6 @@ import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
-
 
 @SpringBootTest(classes = BlogApplication.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @Import(Creator.class)
@@ -77,20 +74,14 @@ class LoginTest {
         WebStorage webStorage = (WebStorage) new Augmenter().augment(driver);
         localStorage = webStorage.getLocalStorage();
 
-        Role role = new Role();
-        role.setRoleName(RoleType.ROLE_USER);
-        roleDao.saveAndFlush(role);
-
         User user = new User();
-        user.setRole(role);
+        user.setRole(roleDao.findByRoleName(RoleType.ROLE_USER));
         user.setUsername("username");
         user.setLastName("lastname");
         user.setFirstName("firstname");
-        user.setId(1L);
-        user.setPassword("testRootPassword");
+        user.setPassword(passwordEncoder.encode("testRootPassword"));
 
         userDao.saveAndFlush(user);
-
     }
 
     @AfterEach
@@ -100,26 +91,25 @@ class LoginTest {
         }
 
         userDao.deleteAll();
-        roleDao.deleteAll();
     }
 
     @Test
     public void successfulUserLogin() {
-        driver.get("http://localhost:" + PORT + "/login");
+        driver.get("http://localhost:" + PORT + "/#/login");
         driver.findElement(By.name("username")).sendKeys("username");
         driver.findElement(By.name("password")).sendKeys("testRootPassword");
         driver.findElement(By.xpath("//button[text()='Login']")).click();
         WebDriverWait wt = new WebDriverWait(driver, 1000);
-        wt.until(ExpectedConditions.urlContains("home"));
+        wt.until(ExpectedConditions.urlContains("/#/about"));
         Assertions.assertNotNull(localStorage.getItem("tokens"));
     }
 
     @Test
     public void unsuccessfulUserLogin() {
-//        driver.get("http://localhost:" + PORT + "/login");
-//        driver.findElement(By.name("username")).sendKeys("usernameusername");
-//        driver.findElement(By.name("password")).sendKeys("wrongPassword");
-//        driver.findElement(By.name("//[text()='Login")).click();
-//        Assertions.assertNull(localStorage.getItem("tokens"));
+        driver.get("http://localhost:" + PORT + "/#/login");
+        driver.findElement(By.name("username")).sendKeys("usernameusername");
+        driver.findElement(By.name("password")).sendKeys("wrongPassword");
+        driver.findElement(By.xpath("//button[text()='Login']")).click();
+        Assertions.assertNull(localStorage.getItem("tokens"));
     }
 }

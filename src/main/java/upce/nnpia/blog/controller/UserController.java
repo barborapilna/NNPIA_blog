@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import upce.nnpia.blog.dao.UserDao;
 import upce.nnpia.blog.dto.UserDto;
+import upce.nnpia.blog.service.RegistrationService;
 import upce.nnpia.blog.service.Response;
 import upce.nnpia.blog.service.UserService;
 
@@ -14,20 +15,12 @@ public class UserController {
 
     private final UserDao userDao;
     private final UserService userService;
+    private final RegistrationService registrationService;
 
-    public UserController(UserDao userDao, UserService userService) {
+    public UserController(UserDao userDao, UserService userService, RegistrationService registrationService) {
         this.userDao = userDao;
         this.userService = userService;
-    }
-
-    @PostMapping("/user")
-    public ResponseEntity<?> saveUser(@RequestBody UserDto user) {
-        try {
-            userService.save(user);
-            return new ResponseEntity<>(new Response("User was added."), HttpStatus.OK);
-        } catch (Exception ex) {
-            return new ResponseEntity<>(new Response("Add user failed."), HttpStatus.BAD_REQUEST);
-        }
+        this.registrationService = registrationService;
     }
 
     @GetMapping("/user/getAll")
@@ -38,15 +31,6 @@ public class UserController {
             return new ResponseEntity<>(new Response("Get users failed."), HttpStatus.BAD_REQUEST);
         }
     }
-
-//    @GetMapping("/user/{id}")
-//    public ResponseEntity<?> getUser(@PathVariable int id) {
-//        try {
-//            return new ResponseEntity<>(userService.findById(id), HttpStatus.OK);
-//        } catch (Exception ex) {
-//            return new ResponseEntity<>(new Response("Get user failed."), HttpStatus.BAD_REQUEST);
-//        }
-//    }
 
     @GetMapping("/user/{username}")
     public ResponseEntity<?> getUser(@PathVariable String username) {
@@ -80,7 +64,7 @@ public class UserController {
     @PostMapping("/registration")
     public ResponseEntity<?> registrationUser(@RequestBody UserDto user) {
         try {
-            userService.save(user);
+            registrationService.registration(user);
             return new ResponseEntity<>(new Response("User was added."), HttpStatus.OK);
         } catch (Exception ex) {
             return new ResponseEntity<>(new Response("Add user failed."), HttpStatus.BAD_REQUEST);

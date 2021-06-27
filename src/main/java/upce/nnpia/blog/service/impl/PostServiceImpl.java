@@ -17,6 +17,7 @@ import upce.nnpia.blog.service.PostService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service(value = "postService")
 public class PostServiceImpl implements PostService {
@@ -40,16 +41,11 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public List<PostGetDto> findAll() {
-//    public Page<PostGetDto> findAll(Pageable pageable) {
-        List<PostGetDto> postsGetDto = new ArrayList<>();
         List<Post> posts = postDao.findAll();
-//        Page<Post> posts = postDao.findAll(pageable);
 
-        for (var post : posts) {
-            postsGetDto.add(new PostGetDto(post.getId(), post.getTitle(), post.getBody(), post.getUser().getUsername()));
-        }
-        return postsGetDto;
-//        return new PageImpl<>(postsGetDto);
+        return posts.stream().map(post ->
+                new PostGetDto(post.getId(), post.getTitle(), post.getBody(), post.getUser().getUsername())
+        ).collect(Collectors.toList());
     }
 
     @Override
