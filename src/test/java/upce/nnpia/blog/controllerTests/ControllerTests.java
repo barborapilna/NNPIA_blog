@@ -11,10 +11,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
-import upce.nnpia.blog.dao.PostDao;
 import upce.nnpia.blog.dao.RoleDao;
 import upce.nnpia.blog.dao.UserDao;
-import upce.nnpia.blog.entity.Role;
 import upce.nnpia.blog.entity.RoleType;
 import upce.nnpia.blog.entity.User;
 
@@ -25,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class PostControllerTests {
+public class ControllerTests {
 
     @Autowired
     private MockMvc mockMvc;
