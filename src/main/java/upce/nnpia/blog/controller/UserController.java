@@ -3,7 +3,6 @@ package upce.nnpia.blog.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import upce.nnpia.blog.dao.UserDao;
 import upce.nnpia.blog.dto.UserDto;
 import upce.nnpia.blog.service.RegistrationService;
 import upce.nnpia.blog.service.Response;

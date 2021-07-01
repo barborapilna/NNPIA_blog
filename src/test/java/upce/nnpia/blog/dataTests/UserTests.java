@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 import upce.nnpia.blog.dao.UserDao;
 import upce.nnpia.blog.dataFactory.UserTestDataFactory;
-import upce.nnpia.blog.entity.Comment;
 import upce.nnpia.blog.entity.User;
 
 import java.util.List;

@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Component;
-import upce.nnpia.blog.entity.Role;
 import upce.nnpia.blog.entity.RoleType;
 
 import javax.annotation.PostConstruct;
@@ -24,14 +23,8 @@ import java.util.Set;
 @Component
 public class Creator {
 
-    Log log = LogFactory.getLog(Creator.class);
-
     static Creator instance;
-
-    @PostConstruct
-    public void postConstruct() {
-        instance = this;
-    }
+    Log log = LogFactory.getLog(Creator.class);
 
     @Autowired
     private ApplicationContext applicationContext;
@@ -42,6 +35,11 @@ public class Creator {
 
     public static Object save(Object entity) {
         return instance.saveEntity(entity);
+    }
+
+    @PostConstruct
+    public void postConstruct() {
+        instance = this;
     }
 
     public void saveEntities(Object... entities) {
@@ -63,10 +61,11 @@ public class Creator {
                     field.setAccessible(true);
                     Object propValue = FieldUtils.readField(field, entity);
                     boolean id = fieldHasAnnotation(field, Id.class);
+
                     if (propValue == null && !id) {
                         Class<?> fieldClass = field.getType();
                         if (fieldClass.isAssignableFrom(String.class)) {
-                            propValue = "Test " + field.getName() + Double.toString(Math.random());
+                            propValue = "Test " + field.getName();
                         } else {
                             if (Date.class.equals(fieldClass)) {
                                 propValue = new Date(System.currentTimeMillis());
@@ -74,12 +73,10 @@ public class Creator {
                                 propValue = 1L;
                             } else if (Set.class.equals(fieldClass)) {
                                 propValue = new HashSet<>();
-                            } else if (Boolean.class.equals(fieldClass)) {
-                                propValue = true;
                             } else if (Integer.class.equals(fieldClass)) {
-                                propValue = 1 + (int) (Math.random() * 50000);
-                            } else if (Double.class.equals(fieldClass)) {
-                                propValue = Math.random();
+                                propValue = 0;
+                            } else if (RoleType.class.equals(fieldClass)) {
+                                propValue = RoleType.ROLE_USER;
                             } else {
                                 propValue = fieldClass.newInstance();
                             }
@@ -107,7 +104,6 @@ public class Creator {
             throw new IllegalStateException("Problem", e);
         }
         return entity;
-
     }
 
     private boolean fieldHasAnnotation(Field field, Class annotationClass) {
@@ -116,8 +112,9 @@ public class Creator {
 
     private JpaRepository getDao(Object entity) {
         String repoClassName = entity.getClass().getSimpleName();
-        String repositoryBeanName = repoClassName.substring(0, 1).toLowerCase() + repoClassName.substring(1) + "Repository";
-        return (JpaRepository) applicationContext.getBean(repositoryBeanName);
+        String repositoryBeanName = repoClassName.substring(0, 1).toLowerCase() + repoClassName.substring(1) + "Dao";
+        JpaRepository jpaRepository = (JpaRepository) applicationContext.getBean(repositoryBeanName);
+        return jpaRepository;
     }
 
 
@@ -129,7 +126,7 @@ public class Creator {
 
                 saveEntity(propValue);
                 String className = propValue.getClass().getSimpleName();
-                String daoName = className.substring(0, 1).toLowerCase() + className.substring(1) + "Repository";
+                String daoName = className.substring(0, 1).toLowerCase() + className.substring(1) + "Dao";
 
                 JpaRepository jpaRepository = applicationContext.getBeansOfType(JpaRepository.class).get(daoName);
                 jpaRepository.save(propValue);

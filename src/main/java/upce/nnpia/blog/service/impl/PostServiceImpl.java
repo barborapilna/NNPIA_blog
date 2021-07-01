@@ -1,20 +1,15 @@
 package upce.nnpia.blog.service.impl;
 
 import org.springframework.beans.BeanUtils;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import upce.nnpia.blog.dao.PostDao;
 import upce.nnpia.blog.dao.UserDao;
-import upce.nnpia.blog.dto.CommentGetDto;
 import upce.nnpia.blog.dto.PostDto;
 import upce.nnpia.blog.dto.PostGetDto;
 import upce.nnpia.blog.entity.Post;
 import upce.nnpia.blog.security.UserDetail;
 import upce.nnpia.blog.service.PostService;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;

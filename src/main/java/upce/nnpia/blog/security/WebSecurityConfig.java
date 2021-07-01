@@ -1,8 +1,11 @@
 package upce.nnpia.blog.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -14,6 +17,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
@@ -54,9 +59,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         // We don't need CSRF for this example
         httpSecurity.csrf().disable()
                 // dont authenticate this particular request
-                .authorizeRequests().antMatchers("/authenticate").permitAll()
-                .antMatchers("/registration").permitAll()
+                .authorizeRequests()
                 .antMatchers("/**").permitAll()
+                .antMatchers("/static/**").permitAll()
+                .antMatchers("/authenticate").permitAll()
+                .antMatchers("/registration").permitAll()
+                .antMatchers("/manifest.json").permitAll()
+                .antMatchers("/favicon.ico").permitAll()
+                .antMatchers("/logo192.png").permitAll()
+                .antMatchers("/logo512.png").permitAll()
+                .antMatchers("/robots.txt").permitAll()
                 // all other requests need to be authenticated
                 .anyRequest().authenticated().and().
                 // make sure we use stateless session; session won't be used to
@@ -69,16 +81,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
-//    @Bean
-//    public WebMvcConfigurer corsConfigurer() {
-//        return new WebMvcConfigurer() {
-//            @Override
-//            public void addCorsMappings(CorsRegistry registry) {
-//                registry.addMapping("/**")
-//                        .maxAge(3600)
-//                        .allowedOrigins("*")
-//                        .allowedMethods("GET", "PUT", "POST", "PATCH", "DELETE", "OPTIONS");
-//            }
-//        };
-//    }
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**")
+                        .maxAge(3600)
+                        .allowedOrigins("*")
+                        .allowedMethods("GET", "PUT", "POST", "PATCH", "DELETE", "OPTIONS");
+            }
+        };
+    }
 }

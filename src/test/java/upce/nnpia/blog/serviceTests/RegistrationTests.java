@@ -33,33 +33,8 @@ public class RegistrationTests {
         newUser.setUsername("testUser");
         newUser.setPassword("testPasswd");
 
-
-         registrationService.registration(newUser);
-
+        registrationService.registration(newUser);
         User result = userService.findOne("testUser");
-
         Assertions.assertEquals(newUser.getUsername(), result.getUsername());
-
-
-
-//        User newUser = new User();
-//        newUser.setFirstName(user.getFirstName());
-//        newUser.setLastName(user.getLastName());
-//        newUser.setUsername(user.getUsername());
-//        newUser.setPassword(passwordEncoder.encode(user.getPassword()));
-//        newUser.setRole(roleService.findByRoleName(RoleType.ROLE_USER));
-//        userService.save(newUser);
-
-
-//        User user = (User) creator.saveEntity(new User());
-//        Post post = (Post) creator.saveEntity(new Post());
-//        post.setUser(user);
-////        Comment comment1 = (Comment) creator.saveEntity(new Comment());
-////        Comment comment2 = (Comment) creator.saveEntity(new Comment());
-////        Comment comment3 = (Comment) creator.saveEntity(new Comment());
-////        Set<Comment> comments = Set.of(comment1, comment2, comment3);
-////        post.setComments(comments);
-//
-//        Assertions.assertTrue(post.getComments().size() == 3);
     }
 }
