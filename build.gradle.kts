@@ -40,32 +40,32 @@ java.targetCompatibility = JavaVersion.VERSION_11
 java.sourceCompatibility = JavaVersion.VERSION_11
 
 project.exec {
-    commandLine = "rm -rf barcaFrontend 2>1 1>/dev/null | true".split(" ")
+    commandLine = "rm -rf frontend 2>1 1>/dev/null | true".split(" ")
 }
 
 project.exec {
-    commandLine = "git clone https://github.com/pavelkrivda/test-nnpia-frontend.git barcaFrontend".split(" ")
+    commandLine = "git clone https://github.com/barborapilna/NNPIA_blog_fe.git frontend".split(" ")
 }
 
 tasks {
 
     register<com.github.gradle.node.npm.task.NpmTask>("appNpmInstall") {
         description = "Installs all dependencies from package.json"
-        workingDir.set(file("${project.projectDir}/barcaFrontend"))
+        workingDir.set(file("${project.projectDir}/frontend"))
         args.set(listOf("install"))
     }
 
     register<com.github.gradle.node.npm.task.NpmTask>("appNpmBuild") {
         dependsOn("appNpmInstall")
         description = "Builds project"
-        workingDir.set(file("${project.projectDir}/barcaFrontend"))
-        args.set(listOf("run", "build:development"))
+        workingDir.set(file("${project.projectDir}/frontend"))
+        args.set(listOf("run", "build"))
     }
 
     register<Copy>("copyWebApp") {
         dependsOn("appNpmBuild")
         description = "Copies built project to where it will be served"
-        from("./barcaFrontend/build")
+        from("./frontend/build")
         into("build/resources/main/static/.")
     }
 
