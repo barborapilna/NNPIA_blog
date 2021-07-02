@@ -1,6 +1,6 @@
 # Semestrální práce
 
-V tomto repozitáři se nachází backend aplikace, kde je ovšem implementován automatický build frontend části aplikace. Odkaz na [frontend repozitář](https://github.com/barborapilna/NNPIA_blog_fe).
+V tomto repozitáři se nachází backend aplikace, kde je ovšem implementován automatický build frontend části aplikace. Zde se dočtete všechny potřebné informace o této aplikaci. Readme soubor [frontend repozitáře](https://github.com/barborapilna/NNPIA_blog_fe) obsahuje pouze odkaz na backendovou (tuto) část aplikace.
 
 ## Multitenantní blog / fórum
 
