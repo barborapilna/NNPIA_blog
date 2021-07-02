@@ -1,5 +1,7 @@
 # Semestrální práce
 
+V tomto repozitáři se nachází backend aplikace, kde je ovšem implementován automatický build frontend části aplikace. Odkaz na [frontend repozitář](https://github.com/barborapilna/NNPIA_blog_fe).
+
 ## Multitenantní blog / fórum
 
 Aplikace je dostupná [zde](https://sem-blog.herokuapp.com/) 
